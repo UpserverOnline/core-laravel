@@ -48,7 +48,7 @@ abstract class Monitor
      */
     public function hasError(string $key = null): bool
     {
-        if ($key) {
+        if (!is_null($key)) {
             return array_key_exists($key, $this->errors());
         }
 
@@ -88,7 +88,7 @@ abstract class Monitor
      */
     public function hasWarning(string $key = null): bool
     {
-        if ($key) {
+        if (!is_null($key)) {
             return array_key_exists($key, $this->warnings());
         }
 

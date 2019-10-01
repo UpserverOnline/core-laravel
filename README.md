@@ -2,7 +2,7 @@
 
 <p align="center">
 <a href="https://travis-ci.org/UpserverOnline/core-laravel"><img src="https://img.shields.io/travis/UpserverOnline/core-laravel/master.svg?style=flat-square" alt="Build Status"></a>
-<a href="https://scrutinizer-ci.com/g/UpserverOnline/core-laravel/badges/quality-score.png?b=master"><img src="https://scrutinizer-ci.com/g/UpserverOnline/core-laravel/badges/quality-score.png?b=master" alt="Scrutinizer Code Quality"></a>
+<a href="https://scrutinizer-ci.com/g/UpserverOnline/core-laravel/"><img src="https://scrutinizer-ci.com/g/UpserverOnline/core-laravel/badges/quality-score.png?b=master" alt="Scrutinizer Code Quality"></a>
 </p>
 
 # Upserver.online for Laravel 5.5+

@@ -54,7 +54,7 @@ class Mail extends Monitor
 
     /**
      * @param string       $driverName
-     * @param Closure|null $guzzleResolver
+     * @param \Closure|null $guzzleResolver
      */
     public function __construct(string $driverName, Closure $guzzleResolver = null)
     {

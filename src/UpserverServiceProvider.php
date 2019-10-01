@@ -39,13 +39,13 @@ class UpserverServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/upserver.php', 'upserver');
 
-        $this->app->singleton('upserver-online.api-client', function ($app) {
+        $this->app->singleton('upserver-online.api-client', function () {
             return new HttpClient([
                 'http_errors' => false,
             ]);
         });
 
-        $this->app->singleton('upserver-online.api', function ($app) {
+        $this->app->singleton('upserver-online.api', function () {
             return new Api(
                 app('upserver-online.api-client'),
                 config('upserver.app_id') ?: '',
@@ -54,7 +54,7 @@ class UpserverServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->singleton('upserver-online.monitors', function ($app) {
+        $this->app->singleton('upserver-online.monitors', function () {
             return [
                 'broadcasting' => Monitors\Pusher::class,
                 'cache'        => Monitors\Cache::class,
