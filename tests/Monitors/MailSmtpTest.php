@@ -33,6 +33,9 @@ class MailSmtpTest extends TestCase
     /** @test */
     public function it_fails_when_it_cant_connect_to_smtp()
     {
+        config(['mail.mailers.smtp.host' => 'smtp.example.com']);
+        config(['mail.mailers.smtp.port' => 1337]);
+
         $monitor = new Mail('smtp');
 
         $this->assertFalse($monitor->passes());
