@@ -12,6 +12,10 @@ class ConfigurationCollector
 {
     private static function mailDrivers(): array
     {
+        if (Support::whereAppVersion('>=', '7.0.0')) {
+            return array_keys(config('mail.mailers'));
+        }
+
         $transportMethods = collect((new ReflectionClass(TransportManager::class))->getMethods())->map->getName();
 
         $monitorMethods = collect((new ReflectionClass(Mail::class))->getMethods())->map->getName();

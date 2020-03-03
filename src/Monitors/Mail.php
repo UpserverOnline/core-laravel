@@ -7,6 +7,7 @@ use GuzzleHttp\Client as HttpClient;
 use Illuminate\Mail\TransportManager;
 use Illuminate\Support\Arr;
 use Throwable;
+use UpserverOnline\Core\Support;
 
 class Mail extends Monitor
 {
@@ -65,11 +66,13 @@ class Mail extends Monitor
     /**
      * Resolves and returns the Transport Manager instance.
      *
-     * @return \Illuminate\Mail\TransportManager
+     * @return mixed
      */
-    private function transportManager(): TransportManager
+    public static function transportManager()
     {
-        return app('swift.transport');
+        return Support::supportsMultipleMailers()
+            ? app('mail.manager')
+            : app('swift.transport');
     }
 
     /**
@@ -81,7 +84,9 @@ class Mail extends Monitor
     private function guzzle($config)
     {
         $config = Arr::add(
-            $config['guzzle'] ?? [], 'connect_timeout', 5
+            $config['guzzle'] ?? [],
+            'connect_timeout',
+            5
         );
 
         // Check if there is a custom resolver to build the instance
@@ -99,15 +104,6 @@ class Mail extends Monitor
      */
     public function run()
     {
-        try {
-            // Try to resolve the driver from the manager
-            $transport = $this->transportManager()->driver($this->driverName);
-        } catch (Throwable $exception) {
-            return $this->error(static::ERROR_CONFIG_INVALID, [
-                'message' => $exception->getMessage(),
-            ]);
-        }
-
         $checker = 'run' . ucfirst($this->driverName) . 'Check';
 
         // Verify we have a checker for this driver
@@ -115,6 +111,19 @@ class Mail extends Monitor
             return $this->warning(static::WARNING_DRIVER_UNSUPPORTED, [
                 'message' => 'This driver is unsupported',
             ]);
+        }
+
+        try {
+            // Try to resolve the driver from the manager
+            $transport = static::transportManager()->driver($this->driverName);
+        } catch (Throwable $exception) {
+            return $this->error(static::ERROR_CONFIG_INVALID, [
+                'message' => $exception->getMessage(),
+            ]);
+        }
+
+        if (Support::supportsMultipleMailers()) {
+            $transport = $transport->getSwiftMailer()->getTransport();
         }
 
         $this->$checker($transport);

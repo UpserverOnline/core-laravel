@@ -15,9 +15,9 @@ class Process
      */
     public function run(string $command): Collection
     {
-        $process = new SymfonyProcess([], null, ['COLUMNS' => '2000'], null, 60);
+        $process = new SymfonyProcess([$command], null, ['COLUMNS' => '2000'], null, 60);
 
-        $process->setCommandLine($command)->run();
+        $process->run();
 
         $output = $process->getOutput();
 

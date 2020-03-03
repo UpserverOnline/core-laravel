@@ -5,6 +5,7 @@ namespace UpserverOnline\Core\Tests\Monitors;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use UpserverOnline\Core\Monitors\Mail;
+use UpserverOnline\Core\Support;
 use UpserverOnline\Core\Tests\MocksGuzzleRequests;
 use UpserverOnline\Core\Tests\TestCase;
 
@@ -18,6 +19,12 @@ class MailMailgunTest extends TestCase
             'domain' => 'sandbox.mailgun.org',
             'secret' => 'secret',
         ]);
+
+        if (Support::supportsMultipleMailers()) {
+            $app['config']->set('mail.mailers', [
+                'mailgun' => ['transport' => 'mailgun'],
+            ]);
+        }
     }
 
     /** @test */
@@ -32,7 +39,9 @@ class MailMailgunTest extends TestCase
                 ->getMock();
 
             return $this->mockRequest(
-                'GET', 'https://api.mailgun.net/v3/domains/sandbox.mailgun.org', ['auth' => ['api', 'secret']]
+                'GET',
+                'https://api.mailgun.net/v3/domains/sandbox.mailgun.org',
+                ['auth' => ['api', 'secret']]
             )->andThrow($exception)->getMock();
         });
 
@@ -47,7 +56,9 @@ class MailMailgunTest extends TestCase
             $response = $this->mockResponse(['domain' => ['is_disabled' => true, 'state' => 'active']]);
 
             return $this->mockRequest(
-                'GET', 'https://api.mailgun.net/v3/domains/sandbox.mailgun.org', ['auth' => ['api', 'secret']]
+                'GET',
+                'https://api.mailgun.net/v3/domains/sandbox.mailgun.org',
+                ['auth' => ['api', 'secret']]
             )->andReturn($response)->getMock();
         });
 
@@ -62,7 +73,9 @@ class MailMailgunTest extends TestCase
             $response = $this->mockResponse(['domain' => ['is_disabled' => false, 'state' => 'not-active']]);
 
             return $this->mockRequest(
-                'GET', 'https://api.mailgun.net/v3/domains/sandbox.mailgun.org', ['auth' => ['api', 'secret']]
+                'GET',
+                'https://api.mailgun.net/v3/domains/sandbox.mailgun.org',
+                ['auth' => ['api', 'secret']]
             )->andReturn($response)->getMock();
         });
 
@@ -77,7 +90,9 @@ class MailMailgunTest extends TestCase
             $exception = $this->mock(ConnectException::class);
 
             return $this->mockRequest(
-                'GET', 'https://api.mailgun.net/v3/domains/sandbox.mailgun.org', ['auth' => ['api', 'secret']]
+                'GET',
+                'https://api.mailgun.net/v3/domains/sandbox.mailgun.org',
+                ['auth' => ['api', 'secret']]
             )->andThrow($exception)->getMock();
         });
 
@@ -92,7 +107,9 @@ class MailMailgunTest extends TestCase
             $response = $this->mockResponse(['domain' => ['is_disabled' => false, 'state' => 'active']]);
 
             return $this->mockRequest(
-                'GET', 'https://api.mailgun.net/v3/domains/sandbox.mailgun.org', ['auth' => ['api', 'secret']]
+                'GET',
+                'https://api.mailgun.net/v3/domains/sandbox.mailgun.org',
+                ['auth' => ['api', 'secret']]
             )->andReturn($response)->getMock();
         });
 

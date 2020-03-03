@@ -13,7 +13,7 @@ class MailSesTest extends TestCase
 {
     private function mockTransport($sesClient)
     {
-        app('swift.transport')->extend('ses', function () use ($sesClient) {
+        $this->mailTransportManager()->extend('ses', function () use ($sesClient) {
             return $this->mock(SesTransport::class)
                 ->shouldReceive('ses')
                 ->andReturn($sesClient)
