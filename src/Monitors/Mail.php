@@ -108,7 +108,7 @@ class Mail extends Monitor
 
         // Verify we have a checker for this driver
         if (!method_exists($this, $checker)) {
-            return $this->warning(static::WARNING_DRIVER_UNSUPPORTED, [
+            $this->warning(static::WARNING_DRIVER_UNSUPPORTED, [
                 'message' => 'This driver is unsupported',
             ]);
         }
@@ -120,6 +120,10 @@ class Mail extends Monitor
             return $this->error(static::ERROR_CONFIG_INVALID, [
                 'message' => $exception->getMessage(),
             ]);
+        }
+
+        if (!method_exists($this, $checker)) {
+            return;
         }
 
         if (Support::supportsMultipleMailers()) {
