@@ -113,9 +113,18 @@ class Mail extends Monitor
             ]);
         }
 
+        // Modern Laravel 7.0 + non-updated config
+        if (Support::supportsMultipleMailers() && !config("mail.mailers")) {
+            try {
+                $transport = $this->transport();
+            } catch (Throwable $exception) {
+                return;
+            }
+        }
+
         try {
-            // Try to resolve the driver from the manager
-            $transport = static::transportManager()->driver($this->driverName);
+            // Try to resolve the swift mailer transport from the manager
+            $transport = $transport ?? $this->transport();
         } catch (Throwable $exception) {
             return $this->error(static::ERROR_CONFIG_INVALID, [
                 'message' => $exception->getMessage(),
@@ -126,10 +135,20 @@ class Mail extends Monitor
             return;
         }
 
-        if (Support::supportsMultipleMailers()) {
-            $transport = $transport->getSwiftMailer()->getTransport();
-        }
-
         $this->$checker($transport);
+    }
+
+    /**
+     * Resolves the Swift Transport from the manager.
+     *
+     * @return mixed
+     */
+    private function transport()
+    {
+        $transport = static::transportManager()->driver($this->driverName);
+
+        return Support::supportsMultipleMailers()
+            ? $transport->getSwiftMailer()->getTransport()
+            : $transport;
     }
 }

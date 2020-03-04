@@ -20,6 +20,8 @@ class MailSmtpTest extends TestCase
     /** @test */
     public function it_warns_when_it_cant_check_the_driver()
     {
+        config(['mail.mailers' => null]);
+
         $this->mailTransportManager()->extend('custom', function () {
             return $this->mock(Swift_Transport::class);
         });
