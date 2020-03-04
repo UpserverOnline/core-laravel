@@ -20,7 +20,9 @@ class MailSmtpTest extends TestCase
     /** @test */
     public function it_warns_when_it_cant_check_the_driver()
     {
-        app('swift.transport')->extend('custom', function () {
+        config(['mail.mailers' => null]);
+
+        $this->mailTransportManager()->extend('custom', function () {
             return $this->mock(Swift_Transport::class);
         });
 
@@ -33,6 +35,9 @@ class MailSmtpTest extends TestCase
     /** @test */
     public function it_fails_when_it_cant_connect_to_smtp()
     {
+        config(['mail.mailers.smtp.host' => 'smtp.example.com']);
+        config(['mail.mailers.smtp.port' => 1337]);
+
         $monitor = new Mail('smtp');
 
         $this->assertFalse($monitor->passes());
@@ -43,7 +48,7 @@ class MailSmtpTest extends TestCase
     {
         $monitor = new Mail('smtp');
 
-        app('swift.transport')->extend('smtp', function () {
+        $this->mailTransportManager()->extend('smtp', function () {
             return $this->mock(Swift_SmtpTransport::class)
                 ->shouldReceive('executeCommand')
                 ->getMock();

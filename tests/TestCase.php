@@ -4,6 +4,7 @@ namespace UpserverOnline\Core\Tests;
 
 use Closure;
 use Mockery;
+use UpserverOnline\Core\Monitors\Mail;
 use UpserverOnline\Core\UpserverServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
@@ -11,6 +12,11 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function mock($abstract, Closure $mock = null)
     {
         return $this->instance($abstract, Mockery::mock(...array_filter(func_get_args())));
+    }
+
+    protected function mailTransportManager()
+    {
+        return Mail::transportManager();
     }
 
     protected function getPackageProviders($app)
