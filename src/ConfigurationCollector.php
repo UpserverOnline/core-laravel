@@ -2,7 +2,6 @@
 
 namespace UpserverOnline\Core;
 
-use Illuminate\Mail\TransportManager;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use ReflectionClass;
@@ -12,7 +11,13 @@ class ConfigurationCollector
 {
     private static function mailDrivers(): array
     {
-        $transportMethods = collect((new ReflectionClass(TransportManager::class))->getMethods())->map->getName();
+        if (Support::whereAppVersion('>=', '7.0.0') && config('mail.mailers')) {
+            return array_keys(config('mail.mailers'));
+        }
+
+        $transportManagerClass = get_class(Mail::transportManager());
+
+        $transportMethods = collect((new ReflectionClass($transportManagerClass))->getMethods())->map->getName();
 
         $monitorMethods = collect((new ReflectionClass(Mail::class))->getMethods())->map->getName();
 

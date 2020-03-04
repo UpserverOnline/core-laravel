@@ -4,6 +4,7 @@ namespace UpserverOnline\Core\Tests;
 
 use Illuminate\Support\Arr;
 use UpserverOnline\Core\ConfigurationCollector;
+use UpserverOnline\Core\Support;
 
 class ConfigurationCollectorTest extends TestCase
 {
@@ -29,7 +30,7 @@ class ConfigurationCollectorTest extends TestCase
             'only_pusher' => [
                 'driver' => 'pusher',
             ],
-            'not_redis'   => [
+            'not_redis' => [
                 'driver' => 'redis',
             ],
         ]);
@@ -104,5 +105,25 @@ class ConfigurationCollectorTest extends TestCase
                 ],
             ],
         ], Arr::except($config, ['mail']));
+    }
+
+    /** @test */
+    public function it_supports_the_modern_mail_manager()
+    {
+        if (!Support::supportsMultipleMailers()) {
+            $this->markTestSkipped('Modern mail manager is not supported in this version of Laravel.');
+        }
+
+        config(['mail.mailers' => [
+            'custom' => [],
+            'smtp'   => [],
+        ]]);
+
+        $config = ConfigurationCollector::get();
+
+        $mail = $config['mail']['drivers'];
+
+        $this->assertTrue(in_array('custom', $mail));
+        $this->assertTrue(in_array('smtp', $mail));
     }
 }

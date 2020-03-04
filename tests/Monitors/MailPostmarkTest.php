@@ -27,6 +27,12 @@ class MailPostmarkTest extends TestCase
         $app['config']->set('services.postmark', [
             'token' => 'secret',
         ]);
+
+        if (Support::supportsMultipleMailers()) {
+            $app['config']->set('mail.mailers', [
+                'postmark' => ['transport' => 'postmark'],
+            ]);
+        }
     }
 
     /** @test */
@@ -44,7 +50,9 @@ class MailPostmarkTest extends TestCase
                 ->getMock();
 
             return $this->mockRequest(
-                'GET', 'https://api.postmarkapp.com/messages/outbound?count=1&offset=0', ['headers' => [
+                'GET',
+                'https://api.postmarkapp.com/messages/outbound?count=1&offset=0',
+                ['headers' => [
                     'X-Postmark-Server-Token' => 'secret',
                     'Content-Type'            => 'application/json',
                 ]]
@@ -62,7 +70,9 @@ class MailPostmarkTest extends TestCase
             $exception = $this->mock(ConnectException::class);
 
             return $this->mockRequest(
-                'GET', 'https://api.postmarkapp.com/messages/outbound?count=1&offset=0', ['headers' => [
+                'GET',
+                'https://api.postmarkapp.com/messages/outbound?count=1&offset=0',
+                ['headers' => [
                     'X-Postmark-Server-Token' => 'secret',
                     'Content-Type'            => 'application/json',
                 ]]
@@ -80,7 +90,9 @@ class MailPostmarkTest extends TestCase
             $response = $this->mockResponse(['Messages' => [], 'TotalCount' => 0]);
 
             return $this->mockRequest(
-                'GET', 'https://api.postmarkapp.com/messages/outbound?count=1&offset=0', ['headers' => [
+                'GET',
+                'https://api.postmarkapp.com/messages/outbound?count=1&offset=0',
+                ['headers' => [
                     'X-Postmark-Server-Token' => 'secret',
                     'Content-Type'            => 'application/json',
                 ]]
@@ -97,7 +109,9 @@ class MailPostmarkTest extends TestCase
             $response = $this->mockResponse([]);
 
             return $this->mockRequest(
-                'GET', 'https://api.postmarkapp.com/messages/outbound?count=1&offset=0', ['headers' => [
+                'GET',
+                'https://api.postmarkapp.com/messages/outbound?count=1&offset=0',
+                ['headers' => [
                     'X-Postmark-Server-Token' => 'secret',
                     'Content-Type'            => 'application/json',
                 ]]

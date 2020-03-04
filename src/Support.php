@@ -2,8 +2,6 @@
 
 namespace UpserverOnline\Core;
 
-use Illuminate\Support\Str;
-
 class Support
 {
     /**
@@ -49,6 +47,17 @@ class Support
     public static function supportsPostmarkDriver(): bool
     {
         return static::whereAppVersion('>=', '5.8.0');
+    }
+
+    /**
+     * Returns a boolean wether the Laravel app mail supports multiple mailers
+     * See also: https://laravel.com/docs/7.x/upgrade
+     *
+     * @return bool
+     */
+    public static function supportsMultipleMailers(): bool
+    {
+        return static::whereAppVersion('>=', '7.0.0');
     }
 
     /**
